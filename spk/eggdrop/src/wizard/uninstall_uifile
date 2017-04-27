@@ -1,0 +1,11 @@
+[{
+    "step_title": "Delete Eggdrop",
+    "items": [{
+        "type": "multiselect",
+        "desc": "Do you want to delete all Eggdrop configuration, data and logfiles? If you do, you will permanently delete them!",
+        "subitems": [{
+            "key": "pkgwizard_rm_conf",
+           "desc": "Permanently delete Eggdrop data"
+        }]
+    }]
+}]

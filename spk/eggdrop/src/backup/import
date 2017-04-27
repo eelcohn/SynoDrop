@@ -1,0 +1,22 @@
+. /usr/syno/bin/jsoncmd
+
+SYNOPKG_CONFIG_DIR="${SYNOPKG_PKGPATH}/etc"
+EGGDROP_USER="eggdrop"
+EGGDROP_GROUP="sc-eggdrop"
+
+importPath=$(jget "${SYNOPKG_BKP_INPUT}" ".temp_path")
+if [ $? -ne 0 ]; then
+	jerr "Failed to get import path"
+	exit 1
+fi
+
+if [ -d "${importPath}" ]; then
+	cp -rf ${importPath}/* ${SYNOPKG_CONFIG_DIR}
+	chown -R ${EGGDROP_USER}:${EGGDROP_GROUP} ${SYNOPKG_CONFIG_DIR}/*
+fi
+
+jout_begin
+joutstr "app_data_version" "1.0"
+jout_end
+
+exit 0
