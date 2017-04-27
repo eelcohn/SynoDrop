@@ -2,7 +2,7 @@
 Eggdrop package for Synology DSM
 
 
-Source code is published in seperate repositories called `spksrc-eggdrop1.6.21` and `spksrc-eggdrop1.8.x`.
+Source code is published in seperate branches called `v1.6.21-1`,`v1.8.0-1-20170427` and `v1.8.1-1-20170427`.
 
 Binary files can be found under 'Releases'.
 
