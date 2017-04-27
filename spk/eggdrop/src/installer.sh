@@ -14,6 +14,11 @@ LOG_FILE="/tmp/${PACKAGE}-sss.log"
 EGGDROP_USER="${PACKAGE}"
 EGGDROP_GROUP="sc-${PACKAGE}"
 
+# Needed for registering certificates in DSM
+CERTIFICATE_TARGET_DIR="/usr/local/share/certificate.d"
+CERTIFICATE_HOOK_DIR="/usr/local/libexec/certificate.d"
+CERTIFICATE_PATH="/usr/local/etc/certificate/${DNAME}/${PACKAGE}/"
+
 
 
 preinst ()
@@ -25,6 +30,10 @@ postinst ()
 {
 	# Create new conf file if we're installing a new package and no conf file exists
 	if [ "${SYNOPKG_PKG_STATUS}" == "INSTALL" ]; then
+		# Register package as a certificate service
+		install_certificates
+
+		# Check if a pre-existing config file is available
 		if [ -f "${CFG_PATH}${CFG_FILE}" ]; then
 			echo "$(date +'%c'): Existing conf file detected, using ${CFG_PATH}${CFG_FILE}" >> ${LOG_FILE} 2>&1
 			echo "$(date +'%c'): Ignoring settings supplied by the user in the install wizard." >> ${LOG_FILE} 2>&1
@@ -47,6 +56,8 @@ postinst ()
 			sed -i -e "s|set network \"I.didn't.edit.my.config.file.net\"|set network \"${wizard_irc_network}\"|g" ${CFG_PATH}${CFG_FILE}
 			sed -i -e "s|  you.need.to.change.this:6667|  ${wizard_irc_network}:${wizard_irc_portnumber}|g" ${CFG_PATH}${CFG_FILE}
 			sed -i -e "s|  another.example.com:7000:password||g" ${CFG_PATH}${CFG_FILE}
+			sed -i -e "s|  \[2001:db8:618:5c0:263::\]:6669:password||g" ${CFG_PATH}${CFG_FILE}
+			sed -i -e "s|  ssl.example.net:+6697||g" ${CFG_PATH}${CFG_FILE}
 			sed -i -e "s|#channel add #lamest|channel add ${wizard_irc_channel}|g" ${CFG_PATH}${CFG_FILE}
 
 			# Set logging options
@@ -59,6 +70,12 @@ postinst ()
 			sed -i -e "s|set chanfile \"LamestBot.chan\"|set chanfile \"${CFG_PATH}eggdrop.chan\"|g" ${CFG_PATH}${CFG_FILE}
 			sed -i -e "s|#set pidfile \"pid.LamestBot\"|set pidfile \"${PID_FILE}\"|g" ${CFG_PATH}${CFG_FILE}
 			sed -i -e "s|set notefile \"LamestBot.notes\"|set notefile \"${CFG_PATH}eggdrop.notes\"|g" ${CFG_PATH}${CFG_FILE}
+
+			# Configure SSL settings in the conf file
+			sed -i -e "s|#set ssl-privatekey \"eggdrop.key\"|set ssl-privatekey \"${CFG_PATH}/cert/privkey.pem\"|g" ${CFG_PATH}${CFG_FILE}
+			sed -i -e "s|#set ssl-certificate \"eggdrop.crt\"|set ssl-certificate \"${CFG_PATH}/cert/cert.pem\"|g" ${CFG_PATH}${CFG_FILE}
+			sed -i -e "s|set ssl-capath \"/etc/ssl/\"|set ssl-capath \"${CFG_PATH}/cert/\"|g" ${CFG_PATH}${CFG_FILE}
+			sed -i -e "s|#set ssl-cafile \"\"|#set ssl-cafile \"${CFG_PATH}/cert/syno-ca-cert.pem\"|g" ${CFG_PATH}${CFG_FILE}
 		fi
 	fi
 
@@ -86,6 +103,12 @@ postinst ()
 
 preuninst ()
 {
+	# Unregister Eggdrop certificate in DSM (if not upgrading)
+	if [ "${SYNOPKG_PKG_STATUS}" == "UNINSTALL" ]; then
+		# Unregister Eggdrop certificate in DSM
+		synocrtunregister ${DNAME}
+	fi
+
 	exit 0
 }
 
@@ -95,6 +118,12 @@ postuninst ()
 	if [ "${SYNOPKG_PKG_STATUS}" == "UNINSTALL" ]; then
 		# Remove firewall config
 #		${SERVICETOOL} --remove-configure-file --package ${PACKAGE}.sc >> /dev/null
+
+		# Remove hook for the certificate reload tool
+		rm -f ${CERTIFICATE_HOOK_DIR}/Eggdrop
+
+		# Always remove certificate files
+		rm -rf "${CFG_PATH}/cert/" >> ${LOG_FILE} 2>&1
 
 		# Remove conf files if user selected it
 		if [ "$pkgwizard_rm_conf" == "true" ]; then
@@ -131,6 +160,13 @@ preupgrade ()
 
 postupgrade ()
 {
+	# Check if we're upgrading from a pre v1.8.0 version of Eggdrop
+	# Since pre v1.8.0 versions doesn't have SSL support, we need to configure the certificates now
+	if [ ! -d "${CFG_PATH}cert/" ]; then
+		echo "$(date +'%c'): Upgrading from Eggdrop 1.6.x to 1.8.x - installing certificates." >> ${LOG_FILE} 2>&1
+		install_certificates
+	fi
+
 # Restore of configuration is not needed on DSM6.0+
 
 #	# Restore the configuration files
@@ -138,5 +174,25 @@ postupgrade ()
 #	mv /tmp/${PACKAGE}/var ${CFG_PATH}/
 
 	exit 0
+}
+
+install_certificates ()
+{
+	# Register package as a certificate service
+	[ -d ${CERTIFICATE_TARGET_DIR} ] || mkdir -p ${CERTIFICATE_TARGET_DIR}
+	cp -a "/var/packages/${PACKAGE}/conf/Eggdrop.cfg" ${CERTIFICATE_TARGET_DIR}/Eggdrop.cfg
+	synocrtregister ${DNAME} >> ${LOG_FILE} 2>&1
+
+	# Copy certificate files to the eggdrop config location
+	mkdir "${CFG_PATH}/cert/" >> ${LOG_FILE} 2>&1
+	cp "${CERTIFICATE_PATH}privkey.pem" "${CFG_PATH}cert/" >> ${LOG_FILE} 2>&1
+	cp "${CERTIFICATE_PATH}cert.pem" "${CFG_PATH}cert/" >> ${LOG_FILE} 2>&1
+	cp "${CERTIFICATE_PATH}chain.pem" "${CFG_PATH}cert/" >> ${LOG_FILE} 2>&1
+	cp "${CERTIFICATE_PATH}fullchain.pem" "${CFG_PATH}cert/" >> ${LOG_FILE} 2>&1
+	chown -R ${EGGDROP_USER}:${EGGDROP_GROUP} "${CFG_PATH}/cert/" >> ${LOG_FILE} 2>&1
+
+	# Add reload hook for the certificate reload tool
+	[ -d ${CERTIFICATE_HOOK_DIR} ] || mkdir -p ${CERTIFICATE_HOOK_DIR}
+	ln -sf /var/packages/${PACKAGE}/target/tools/certificate_reloader.sh ${CERTIFICATE_HOOK_DIR}/Eggdrop
 }
 

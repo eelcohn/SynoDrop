@@ -1,5 +1,5 @@
 SPK_NAME = eggdrop
-SPK_VERS = 1.6.21
+SPK_VERS = 1.8.0
 SPK_REV = 1
 SPK_ICON = src/eggdrop.png
 
@@ -28,7 +28,7 @@ WIZARDS_DIR = src/wizard/
 INSTALLER_SCRIPT = src/installer.sh
 SSS_SCRIPT = src/dsm-control.sh
 
-INSTALL_PREFIX = /usr/local/$(SPK_NAME)/
+INSTALL_PREFIX = /usr/local/$(SPK_NAME)
 
 POST_STRIP_TARGET = packet_extra_install
 
@@ -36,6 +36,8 @@ include ../../mk/spksrc.spk.mk
 
 .PHONY: packet_extra_install
 packet_extra_install:
+	install -m 755 -d $(STAGING_DIR)/tools
+	install -m 755 src/certificate_reloader.sh $(STAGING_DIR)/tools/certificate_reloader.sh
 	install -m 755 -d $(STAGING_DIR)/var
 	install -m 755 -d $(STAGING_DIR)/var/log
 	install -m 755 -d $(STAGING_DIR)/var/pid
