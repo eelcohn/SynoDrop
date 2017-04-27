@@ -1,0 +1,15 @@
+* HyperBackup integration
+  HyperBackup integration is archieved by placing script files in /var/packages/eggdrop/scripts/backup (or ./scripts/backup)
+  You can have 6 possible files:
+  * can_export	750	Optional	: Unknown what this exactly does
+  * can_import	750	Optional	: Unknown what this exactly does
+  * export	750	Mandatory	: This script will be executed by HyperBackup when HyperBackup performs a backup of this package
+  * import	750	Mandatory	: This script will be executed by HyperBackup when HyperBackup performs a restore of this package
+  * info	640	Optional	: Database backup is described here
+  * version	640	Mandatory	: Version number (always 1.0)
+
+  HyperBackup integration in SynoCommunity packages:
+  make arch-xxxx
+  rm ../../package/eggdrop_arch-xxxx_1.8.0-1.spk
+  cp -aR src/backup work-arch-xxxx/scripts/
+  make arch-xxxx
