@@ -1,0 +1,83 @@
+[{
+	"step_title": "Basic configuration",
+	"items": [{
+		"type": "textfield",
+		"desc": "Enter the username the bot uses on IRC",
+		"subitems": [{
+			"key": "wizard_bot_username",
+			"desc": "Username",
+			"defaultValue": "lamest",
+			"validator": {
+				"allowBlank": false,
+				"minLength": 1,
+				"maxLength": 32
+			}
+		}]
+	}, {
+		"type": "textfield",
+		"desc": "Enter the nickname the bot uses on IRC",
+		"subitems": [{
+			"key": "wizard_bot_nickname",
+			"desc": "Nickname",
+			"defaultValue": "Lamestbot",
+			"validator": {
+				"allowBlank": false,
+				"minLength": 1,
+				"maxLength": 32
+			}
+		}]
+	}, {
+		"type": "textfield",
+		"desc": "Enter the e-mail address of the admin of the bot",
+		"subitems": [{
+			"key": "wizard_bot_admin",
+			"desc": "Email address",
+			"defaultValue": "Lamer <email: lamer@lamest.lame.org>",
+			"validator": {
+				"allowBlank": false
+			}
+		}]
+	}]
+}, {
+	"step_title": "IRC Connection details",
+	"items": [{
+		"type": "textfield",
+		"desc": " Set this to the IRC network your bot is connected to",
+		"subitems": [{
+			"key": "wizard_irc_network",
+			"desc": "URL",
+			"defaultValue": "I.didn't.edit.my.config.file.net",
+			"validator": {
+				"allowBlank": false
+			}
+		}]
+	}, {
+		"type": "textfield",
+		"desc": "Set this to the portnumber of the IRC server",
+		"subitems": [{
+			"key": "wizard_irc_portnumber",
+			"desc": "Port number",
+			"defaultValue": "6667",
+			"validator": {
+				"allowBlank": false,
+				"minLength": 1,
+				"maxLength": 6,
+				"regex": {
+					"fn": "{if ((arguments >= 0) && (arguments <= 65535)) return 'Invalid port number';}"
+				}
+			}
+		}]
+	}, {
+		"type": "textfield",
+		"desc": "Set the channel(s) you want your bot to connect to. It is strongly recommended to use a test channel because the bot might show unwanted behaviour if you do not tweak the config file.",
+		"subitems": [{
+			"key": "wizard_irc_channel",
+			"desc": "Channels",
+			"defaultValue": "#lamest",
+			"validator": {
+				"allowBlank": false
+			}
+		}]
+	}]
+}]
+

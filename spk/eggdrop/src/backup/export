@@ -1,0 +1,19 @@
+. /usr/syno/bin/jsoncmd
+
+SYNOPKG_CONFIG_DIR="${SYNOPKG_PKGPATH}/etc"
+
+exportPath=$(jget "${SYNOPKG_BKP_INPUT}" ".temp_path")
+if [ $? -ne 0 ]; then
+	jerr "Failed to get export path"
+	exit 1
+fi
+
+if [ -d "${SYNOPKG_CONFIG_DIR}" ]; then
+	cp -rf ${SYNOPKG_CONFIG_DIR}/* ${exportPath}
+fi
+
+jout_begin
+joutstr "app_data_version" "1.0"
+jout_end
+
+exit 0
