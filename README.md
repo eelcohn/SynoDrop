@@ -12,7 +12,7 @@ Some features of the Eggdrop packages for Synology DSM:
 Source code is published in seperate repositories called `spksrc-eggdrop1.6.21` and `spksrc-eggdrop1.8.x`.
 
 ## Where can I find the package (.spk) for my DiskStation?
-Binary files can be found under [Releases](https://github.com/eelcohn/SynoTcl/releases/).
+Binary files can be found under [Releases](https://github.com/eelcohn/SynoDrop/releases/).
 
 ## How can I compile the package myself?
 The source of these packages can be found at https://github.com/SynoCommunity/spksrc/
