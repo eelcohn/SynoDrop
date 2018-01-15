@@ -1,9 +1,9 @@
 PKG_NAME = eggdrop
-PKG_VERS = 1.8.3
+PKG_VERS = 1.8.3rc2
 PKG_EXT = tar.gz
-PKG_DIST_NAME = $(PKG_NAME)-$(PKG_VERS)rc1.$(PKG_EXT)
+PKG_DIST_NAME = $(PKG_NAME)-$(PKG_VERS).$(PKG_EXT)
 PKG_DIST_SITE = ftp://ftp.eggheads.org/pub/eggdrop/source/1.8
-PKG_DIR = $(PKG_NAME)-release-$(PKG_VERS)
+PKG_DIR = $(PKG_NAME)-$(PKG_VERS)
 
 BUILD_DEPENDS = cross/zlib cross/tcl cross/openssl
 
