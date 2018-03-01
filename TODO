@@ -6,10 +6,22 @@
   * export	750	Mandatory	: This script will be executed by HyperBackup when HyperBackup performs a backup of this package
   * import	750	Mandatory	: This script will be executed by HyperBackup when HyperBackup performs a restore of this package
   * info	640	Optional	: Database backup is described here
+    {
+      "online_backup": false/true,
+      "cancel_mode": "interrupt_self_rollback"
+      "external_data": [
+                {
+                        "handler_type": "built-in",
+                        "handler": "pgsql",
+                        "data": [
+                                {
+                                        "db": "caldav"
+                                }
+                        ]
+                }
+        ]
+    }
   * version	640	Mandatory	: Version number (always 1.0)
 
   HyperBackup integration in SynoCommunity packages:
-  make arch-xxxx
-  rm ../../package/eggdrop_arch-xxxx_1.8.0-1.spk
-  cp -aR src/backup work-arch-xxxx/scripts/
-  make arch-xxxx
+  * See eggdrop example with POST_STRIP_TARGET
