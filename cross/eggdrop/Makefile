@@ -1,5 +1,5 @@
 PKG_NAME = eggdrop
-PKG_VERS = 1.8.3
+PKG_VERS = 1.8.4rc3
 PKG_EXT = tar.gz
 PKG_DIST_NAME = $(PKG_NAME)-$(PKG_VERS).$(PKG_EXT)
 PKG_DIST_SITE = ftp://ftp.eggheads.org/pub/eggdrop/source/1.8
