@@ -1,5 +1,5 @@
 SPK_NAME = eggdrop
-SPK_VERS = 1.8.4rc3
+SPK_VERS = 1.8.4
 SPK_REV = 1
 SPK_ICON = src/eggdrop.png
 
@@ -16,7 +16,7 @@ DESCRIPTION = Eggdrop is the oldest Internet Relay Chat \(IRC\) bot still in act
 RELOAD_UI = no
 DISPLAY_NAME = "Eggdrop"
 STARTABLE = yes
-CHANGELOG = "First Synology package release for v1.8.4rc1"
+CHANGELOG = "First Synology package release for v$(SPK_VERS)"
 
 HOMEPAGE = http://www.eggheads.org/
 LICENSE = GPL
