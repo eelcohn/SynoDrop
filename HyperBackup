@@ -21,7 +21,11 @@
                 }
         ]
     }
-  * version	640	Mandatory	: Version number (always 1.0)
+online_backup: false=packet stopped before a backup/restore, and started after the backup/restore finished
+
+* version	640	Mandatory	: Version number (always 1.0)
 
   HyperBackup integration in SynoCommunity packages:
   * See eggdrop example with POST_STRIP_TARGET
+
+See also https://www.synology-forum.de/showthread.html?68578-HowTo-3rdparty-Apps-in-DSM-Sicherung-Replication-integrieren
