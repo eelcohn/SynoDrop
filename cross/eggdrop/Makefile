@@ -24,7 +24,7 @@ CONFIGURE_ARGS += --with-tclinc=$(STAGING_INSTALL_PREFIX)/include/tcl.h
 CONFIGURE_ARGS += --with-tcllib=$(STAGING_INSTALL_PREFIX)/lib/libtcl.so
 CONFIGURE_ARGS += --with-sslinc=$(STAGING_INSTALL_PREFIX)/include/openssl/
 CONFIGURE_ARGS += --with-ssllib=$(STAGING_INSTALL_PREFIX)/
-ADDITIONAL_LD_FLAGS = "-Wl,-rpath,/var/packages/tcl/target/lib"
+ADDITIONAL_LDFLAGS = "-Wl,-rpath,/var/packages/tcl/target/lib"
 
 include ../../mk/spksrc.cross-cc.mk
 
